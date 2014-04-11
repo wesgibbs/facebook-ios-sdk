@@ -333,11 +333,13 @@ static NSDate *g_fetchedAppSettingsTimestamp = nil;
 
 + (NSString *)advertiserID {
     NSString *advertiserID = nil;
+#ifndef FACEBOOK_NO_IDFA
     Class ASIdentifierManagerClass = [FBDynamicFrameworkLoader loadClass:@"ASIdentifierManager" withFramework:@"AdSupport"];
     if ([ASIdentifierManagerClass class]) {
         ASIdentifierManager *manager = [ASIdentifierManagerClass sharedManager];
         advertiserID = [[manager advertisingIdentifier] UUIDString];
     }
+#endif
     return advertiserID;
 }
 
@@ -346,6 +348,7 @@ static NSDate *g_fetchedAppSettingsTimestamp = nil;
         return AdvertisingTrackingDisallowed;
     }
     FBAdvertisingTrackingStatus status = AdvertisingTrackingUnspecified;
+#ifndef FACEBOOK_NO_IDFA
     Class ASIdentifierManagerClass = [FBDynamicFrameworkLoader loadClass:@"ASIdentifierManager" withFramework:@"AdSupport"];
     if ([ASIdentifierManagerClass class]) {
         ASIdentifierManager *manager = [ASIdentifierManagerClass sharedManager];
@@ -353,6 +356,7 @@ static NSDate *g_fetchedAppSettingsTimestamp = nil;
             status = [manager isAdvertisingTrackingEnabled] ? AdvertisingTrackingAllowed : AdvertisingTrackingDisallowed;
         }
     }
+#endif
     return status;
 }
 
